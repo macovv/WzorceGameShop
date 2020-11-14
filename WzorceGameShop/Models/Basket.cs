@@ -9,5 +9,6 @@ namespace WzorceGameShop.Models
     {
         public int Id { get; set; }
         public IList<Game> SelectedGames { get; set; }
+        public ICollection<BasketGame> BasketGames { get; set; }
     }
 }

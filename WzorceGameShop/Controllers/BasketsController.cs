@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WzorceGameShop.Data;
@@ -10,9 +9,7 @@ using WzorceGameShop.Models;
 
 namespace WzorceGameShop.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BasketsController : ControllerBase
+    public class BasketsController : Controller
     {
         private readonly GameShopContext _context;
 
@@ -21,90 +18,51 @@ namespace WzorceGameShop.Controllers
             _context = context;
         }
 
-        // GET: api/Baskets
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Basket>>> GetBaskets()
+        public async Task<IActionResult> Index()
         {
-            return await _context.Baskets.ToListAsync();
-        }
-
-        // GET: api/Baskets/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Basket>> GetBasket(int id)
-        {
-            var basket = await _context.Baskets.FindAsync(id);
-
-            if (basket == null)
+            var baskets = await _context.BasketsGames
+                .Where(m => m.BasketId == 3).ToListAsync();
+            if (baskets == null)
             {
                 return NotFound();
             }
 
-            return basket;
-        }
+            var gameList = new List<Game>();
 
-        // PUT: api/Baskets/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBasket(int id, Basket basket)
-        {
-            if (id != basket.Id)
+            foreach(var x in baskets)
             {
-                return BadRequest();
+                var game = await _context.Games
+                    .FirstOrDefaultAsync(b => x.GameId == b.Id);
+                gameList.Add(game);
             }
 
-            _context.Entry(basket).State = EntityState.Modified;
+            //var games =
+            return View(gameList);
+        }
 
-            try
+        //[HttpPost]
+        //public async Task<IActionResult> AddToBasket(int basketId, int gameId)
+        public async Task<IActionResult> AddToBasket()
+        {
+            int gameId = 1;
+            var basket = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == 3);
+            if (basket == null)
             {
+                basket = new Basket();
+                await _context.Baskets.AddAsync(basket);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            var game = await _context.Games.FirstOrDefaultAsync(x => x.Id == gameId);
+            var basketGame = new BasketGame();
+
+            if (game != null)
             {
-                if (!BasketExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                basketGame.BasketId = basket.Id;
+                basketGame.GameId = game.Id;
+                await _context.BasketsGames.AddAsync(basketGame);
+                await _context.SaveChangesAsync();
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Baskets
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Basket>> PostBasket(Basket basket)
-        {
-            _context.Baskets.Add(basket);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetBasket", new { id = basket.Id }, basket);
-        }
-
-        // DELETE: api/Baskets/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Basket>> DeleteBasket(int id)
-        {
-            var basket = await _context.Baskets.FindAsync(id);
-            if (basket == null)
-            {
-                return NotFound();
-            }
-
-            _context.Baskets.Remove(basket);
-            await _context.SaveChangesAsync();
-
-            return basket;
-        }
-
-        private bool BasketExists(int id)
-        {
-            return _context.Baskets.Any(e => e.Id == id);
+            return RedirectToAction("Index", "Games");
         }
     }
 }

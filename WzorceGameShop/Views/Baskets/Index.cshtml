@@ -1,0 +1,16 @@
+﻿@model IEnumerable<WzorceGameShop.Models.Game>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<h1>ttttttteeeest</h1>
+
+<ul>
+    @foreach(var game in Model)
+    {
+        <li>@game.Name</li>
+    }
+</ul>

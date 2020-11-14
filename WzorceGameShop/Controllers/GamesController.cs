@@ -54,8 +54,17 @@ namespace WzorceGameShop.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Promotion,Description,PG")] Game game)
+        //public async Task<IActionResult> Create([Bind("Id,Name,Price,Promotion,Description,PG")] Game game)
+        public async Task<IActionResult> Create(string name, decimal price, bool promotion, string desc, int pg)
         {
+            var game = new Game
+            {
+                Name = name,
+                Price = price,
+                Promotion = promotion,
+                Description = desc,
+                PG = pg
+            };
             if (ModelState.IsValid)
             {
                 _context.Add(game);

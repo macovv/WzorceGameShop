@@ -20,5 +20,21 @@ namespace WzorceGameShop.Data
         public DbSet<Studio> Studios { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<BasketGame> BasketsGames { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BasketGame>().HasKey(
+               bc => new { bc.BasketId, bc.GameId }
+            );
+            modelBuilder.Entity<BasketGame>()
+                .HasOne(bc => bc.Basket)
+                .WithMany(b => b.BasketGames)
+                .HasForeignKey(bc => bc.BasketId);
+            modelBuilder.Entity<BasketGame>()
+                .HasOne(bc => bc.Game)
+                .WithMany(b => b.BasketGames)
+                .HasForeignKey(bc => bc.GameId);
+        }
     }
 }

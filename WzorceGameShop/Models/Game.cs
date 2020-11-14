@@ -15,5 +15,6 @@ namespace WzorceGameShop.Models
         public bool Promotion { get; set; }
         public string Description { get; set; }
         public int PG { get; set; }
+        public ICollection<BasketGame> BasketGames { get; set; }
     }
 }

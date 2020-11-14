@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WzorceGameShop.Data;
 using WzorceGameShop.Models;
 
 namespace WzorceGameShop.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class StudiosController : ControllerBase
+    public class StudiosController : Controller
     {
         private readonly GameShopContext _context;
 
@@ -21,85 +19,130 @@ namespace WzorceGameShop.Controllers
             _context = context;
         }
 
-        // GET: api/Studios
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Studio>>> GetStudios()
+        // GET: Studios
+        public async Task<IActionResult> Index()
         {
-            return await _context.Studios.ToListAsync();
+            return View(await _context.Studios.ToListAsync());
         }
 
-        // GET: api/Studios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Studio>> GetStudio(int id)
+        // GET: Studios/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var studio = await _context.Studios.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var studio = await _context.Studios
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (studio == null)
             {
                 return NotFound();
             }
 
-            return studio;
+            return View(studio);
         }
 
-        // PUT: api/Studios/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudio(int id, Studio studio)
+        // GET: Studios/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Studios/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name")] Studio studio)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(studio);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(studio);
+        }
+
+        // GET: Studios/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var studio = await _context.Studios.FindAsync(id);
+            if (studio == null)
+            {
+                return NotFound();
+            }
+            return View(studio);
+        }
+
+        // POST: Studios/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Studio studio)
         {
             if (id != studio.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(studio).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudioExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(studio);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!StudioExists(studio.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(studio);
         }
 
-        // POST: api/Studios
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Studio>> PostStudio(Studio studio)
+        // GET: Studios/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            _context.Studios.Add(studio);
-            await _context.SaveChangesAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            return CreatedAtAction("GetStudio", new { id = studio.Id }, studio);
-        }
-
-        // DELETE: api/Studios/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Studio>> DeleteStudio(int id)
-        {
-            var studio = await _context.Studios.FindAsync(id);
+            var studio = await _context.Studios
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (studio == null)
             {
                 return NotFound();
             }
 
+            return View(studio);
+        }
+
+        // POST: Studios/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var studio = await _context.Studios.FindAsync(id);
             _context.Studios.Remove(studio);
             await _context.SaveChangesAsync();
-
-            return studio;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool StudioExists(int id)
