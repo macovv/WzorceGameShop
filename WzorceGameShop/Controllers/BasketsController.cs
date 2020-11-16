@@ -40,11 +40,10 @@ namespace WzorceGameShop.Controllers
             return View(gameList);
         }
 
-        //[HttpPost]
         //public async Task<IActionResult> AddToBasket(int basketId, int gameId)
-        public async Task<IActionResult> AddToBasket()
+        public async Task<IActionResult> AddToBasket(int? id)
         {
-            int gameId = 1;
+            //int gameId = 1;
             var basket = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == 3);
             if (basket == null)
             {
@@ -52,7 +51,7 @@ namespace WzorceGameShop.Controllers
                 await _context.Baskets.AddAsync(basket);
                 await _context.SaveChangesAsync();
             }
-            var game = await _context.Games.FirstOrDefaultAsync(x => x.Id == gameId);
+            var game = await _context.Games.FirstOrDefaultAsync(x => x.Id == id);
             var basketGame = new BasketGame();
 
             if (game != null)
