@@ -1,6 +1,4 @@
-﻿@model WzorceGameShop.Models.Game
-
-@{
+﻿@model WzorceGameShop.ViewModel.CreateGameViewModel
     ViewData["Title"] = "Create";
 }
 
@@ -13,29 +11,41 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Game.Name" class="control-label"></label>
+                <input asp-for="Game.Name" class="form-control" />
+                <span asp-validation-for="Game.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" type="number" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Game.Price" class="control-label"></label>
+                <input asp-for="Game.Price" type="number" class="form-control" />
+                <span asp-validation-for="Game.Price" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Promotion" /> @Html.DisplayNameFor(model => model.Promotion)
+                    <input class="form-check-input" asp-for="Game.Promotion" /> @Html.DisplayNameFor(model => model.Game.Promotion)
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" data-val-maxlength-max="5000"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Game.Description" class="control-label"></label>
+                <textarea asp-for="Game.Description" class="form-control" data-val-maxlength-max="5000"></textarea>
+                <span asp-validation-for="Game.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PG" class="control-label"></label>
-                <input asp-for="PG" class="form-control" />
-                <span asp-validation-for="PG" class="text-danger"></span>
+                <label asp-for="Game.PG" class="control-label"></label>
+                <input asp-for="Game.PG" class="form-control" />
+                <span asp-validation-for="Game.PG" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select class="form-control" asp-for="Game.StudioId"
+                        asp-items="@(Model.Studio)">
+                    <option>Please select one</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control" asp-for="Game.CategoryId"
+                        asp-items="@(Model.Category)">
+                    <option>Please select one</option>
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

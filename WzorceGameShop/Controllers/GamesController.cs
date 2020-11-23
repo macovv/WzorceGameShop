@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WzorceGameShop.Data;
 using WzorceGameShop.Models;
+using WzorceGameShop.ViewModel;
 
 namespace WzorceGameShop.Controllers
 {
@@ -44,10 +45,22 @@ namespace WzorceGameShop.Controllers
         }
 
         // GET: Games/Create
-        public IActionResult Create()
+        // GET: Games/Create
+        public async Task<IActionResult> Create()
         {
-            return View();
+            Game game = new Game();
+            List<Category> categories;
+            List<Studio> studios;
+
+            categories = await _context.Categories.ToListAsync();
+            studios = await _context.Studios.ToListAsync();
+
+
+            CreateGameViewModel vm = new CreateGameViewModel(game, categories, studios);
+
+            return View(vm);
         }
+
 
         // POST: Games/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -55,24 +68,30 @@ namespace WzorceGameShop.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create([Bind("Id,Name,Price,Promotion,Description,PG")] Game game)
-        public async Task<IActionResult> Create(string name, decimal price, bool promotion, string desc, int pg)
+        public async Task<IActionResult> Create(CreateGameViewModel vm)
         {
+            //Category category = _context.Categories.Find(vm.IdCategory);
+            //Studio studio = _context.Studios.Find(vm.IdStudio);
+
             var game = new Game
             {
-                Name = name,
-                Price = price,
-                Promotion = promotion,
-                Description = desc,
-                PG = pg
+                Name = vm.Game.Name,
+                CategoryId = vm.Game.CategoryId,
+                StudioId = vm.Game.StudioId,
+                Price = vm.Game.Price,
+                Promotion = vm.Game.Promotion,
+                Description = vm.Game.Description,
+                PG = vm.Game.PG,
             };
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(game);
+            //}
+            //return View(vm);
         }
+
 
         // GET: Games/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -31,10 +31,23 @@ namespace WzorceGameShop.Data
                 .HasOne(bc => bc.Basket)
                 .WithMany(b => b.BasketGames)
                 .HasForeignKey(bc => bc.BasketId);
+
             modelBuilder.Entity<BasketGame>()
                 .HasOne(bc => bc.Game)
                 .WithMany(b => b.BasketGames)
                 .HasForeignKey(bc => bc.GameId);
+
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.Category)
+                .WithMany(c => c.Games)
+                .HasForeignKey(g => g.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.Studio)
+                .WithMany(c => c.Games)
+                .HasForeignKey(g => g.StudioId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

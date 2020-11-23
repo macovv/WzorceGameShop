@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WzorceGameShop.Data;
 
 namespace WzorceGameShop.Migrations
 {
     [DbContext(typeof(GameShopContext))]
-    partial class GameShopContextModelSnapshot : ModelSnapshot
+    [Migration("20201123113554_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,18 +204,16 @@ namespace WzorceGameShop.Migrations
                         .HasForeignKey("BillId");
 
                     b.HasOne("WzorceGameShop.Models.Category", "Category")
-                        .WithMany("Games")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("WzorceGameShop.Models.Client", null)
                         .WithMany("Games")
                         .HasForeignKey("ClientId");
 
                     b.HasOne("WzorceGameShop.Models.Studio", "Studio")
-                        .WithMany("Games")
-                        .HasForeignKey("StudioId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("StudioId");
                 });
 #pragma warning restore 612, 618
         }
