@@ -44,7 +44,7 @@ namespace WzorceGameShop.Controllers
         public async Task<IActionResult> AddToBasket(int? id)
         {
             //int gameId = 1;
-            var basket = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == 3);
+            var basket = await _context.Baskets.Include(x => x.BasketGames).FirstOrDefaultAsync(x => x.Id == 3);
             if (basket == null)
             {
                 basket = new Basket();
@@ -54,7 +54,7 @@ namespace WzorceGameShop.Controllers
             var game = await _context.Games.FirstOrDefaultAsync(x => x.Id == id);
             var basketGame = new BasketGame();
 
-            if (game != null)
+            if (game != null && basket.BasketGames.Count(x => x.GameId == id) == 0)
             {
                 basketGame.BasketId = basket.Id;
                 basketGame.GameId = game.Id;
@@ -62,6 +62,23 @@ namespace WzorceGameShop.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Games");
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var basket = await _context.Baskets.Include(x => x.BasketGames).FirstOrDefaultAsync(x => x.Id == 3);
+            if (basket == null)
+            {
+                basket = new Basket();
+                await _context.Baskets.AddAsync(basket);
+                await _context.SaveChangesAsync();
+            }
+
+            var basketGame = basket.BasketGames.Where(x => x.GameId == id).FirstOrDefault();
+
+            _context.BasketsGames.Remove(basketGame);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Baskets");
         }
     }
 }
