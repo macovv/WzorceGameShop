@@ -2,16 +2,17 @@
 
 @{
     ViewData["Title"] = "View";
-    int price = 0;
 }
 
 <h1>Basket</h1>
 
-    @foreach(var game in Model)
-    {
-<ul>
-    <li>@game.Name</li>
-    <li>@game.Price</li>
-    <a asp-action="Delete" asp-route-id="@game.Id">Delete</a>
-</ul>
-    }
+@foreach (var game in Model)
+{
+    <ul>
+        <li>@game.Name</li>
+        <li>@game.Price</li>
+        <a asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+    </ul>
+}
+
+@Html.ActionLink("Buy", "GenerateBill", "Bills", 3);

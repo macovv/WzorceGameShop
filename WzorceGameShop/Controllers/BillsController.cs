@@ -10,101 +10,55 @@ using WzorceGameShop.Models;
 
 namespace WzorceGameShop.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BillsController : ControllerBase
+    public class BillsController : Controller
     {
         private readonly GameShopContext _context;
-
         public BillsController(GameShopContext context)
         {
             _context = context;
         }
 
-        // GET: api/Bills
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bill>>> GetBills()
+
+        public async Task<IActionResult> GenerateBill()
         {
-            return await _context.Bills.ToListAsync();
+            var basket = await _context.Baskets.Include(x => x.BasketGames).FirstOrDefaultAsync(x => x.Id == 3);
+
+            //var basketGames = _context.BasketsGames.FirstOrDefault(x => x.BasketId == 3);
+            var bill = new Bill();
+            foreach(var basketGame in basket.BasketGames)
+            {
+                var game = _context.Games.FirstOrDefault(x => x.Id == basketGame.GameId);
+                bill.SummaryPrice += game.Price;
+            }
+            await _context.Bills.AddAsync(bill);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", 1);
         }
 
-        // GET: api/Bills/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Bill>> GetBill(int id)
+        // GET: BillsController/Details/5
+        public ActionResult Details(int? id)
         {
-            var bill = await _context.Bills.FindAsync(id);
-
-            if (bill == null)
-            {
-                return NotFound();
-            }
-
-            return bill;
+            var bill = _context.Bills.FirstOrDefault(x => x.Id == 1);
+            return View(bill);
         }
 
-        // PUT: api/Bills/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBill(int id, Bill bill)
+        // POST: BillsController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(IFormCollection collection)
         {
-            if (id != bill.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(bill).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!BillExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return View();
             }
-
-            return NoContent();
         }
 
-        // POST: api/Bills
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Bill>> PostBill(Bill bill)
-        {
-            _context.Bills.Add(bill);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBill", new { id = bill.Id }, bill);
-        }
 
-        // DELETE: api/Bills/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Bill>> DeleteBill(int id)
-        {
-            var bill = await _context.Bills.FindAsync(id);
-            if (bill == null)
-            {
-                return NotFound();
-            }
-
-            _context.Bills.Remove(bill);
-            await _context.SaveChangesAsync();
-
-            return bill;
-        }
-
-        private bool BillExists(int id)
-        {
-            return _context.Bills.Any(e => e.Id == id);
-        }
     }
 }
