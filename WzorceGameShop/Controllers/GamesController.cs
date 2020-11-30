@@ -21,9 +21,68 @@ namespace WzorceGameShop.Controllers
         }
 
         // GET: Games
-        public async Task<IActionResult> Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Games.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nameDesc" : "";
+            ViewData["CategorySortParam"] = sortOrder == "category" ? "categoryDesc" : "category";
+            ViewData["StudioSortParam"] = sortOrder == "studio" ? "studioDesc" : "studio";
+            ViewData["PriceSortParam"] = sortOrder == "price" ? "priceDesc" : "price";
+            ViewData["PGSortParam"] = sortOrder == "pg" ? "pgDesc" : "pg";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var games = from x in _context.Games select x;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                games = games.Where(x =>
+                        x.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "nameDesc":
+                    games = games.OrderByDescending(x => x.Name);
+                    break;
+                case "category":
+                    games = games.OrderBy(x => x.CategoryId);
+                    break;
+                case "categoryDesc":
+                    games = games.OrderByDescending(x => x.CategoryId);
+                    break;
+                case "studio":
+                    games = games.OrderBy(x => x.StudioId);
+                    break;
+                case "studioDesc":
+                    games = games.OrderByDescending(x => x.StudioId);
+                    break;
+                case "price":
+                    games = games.OrderBy(x => x.Price);
+                    break;
+                case "priceDesc":
+                    games = games.OrderByDescending(x => x.Price);
+                    break;
+                case "pg":
+                    games = games.OrderBy(x => x.PG);
+                    break;
+                case "pgDesc":
+                    games = games.OrderByDescending(x => x.PG);
+                    break;
+                default:
+                    games = games.OrderBy(x => x.Name);
+                    break;
+            }
+            return View(games);
         }
 
         // GET: Games/Details/5
