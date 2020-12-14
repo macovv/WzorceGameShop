@@ -9,5 +9,6 @@ namespace WzorceGameShop.Models
         public string Login { get; set; }
         public decimal Saldo { get; set; }
         public IList<Game> Games { get; set; }
+        public ICollection<ClientGame> ClientGames { get; set; }
     }
 }

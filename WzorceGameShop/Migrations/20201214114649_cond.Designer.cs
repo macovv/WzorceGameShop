@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WzorceGameShop.Data;
 
 namespace WzorceGameShop.Migrations
 {
     [DbContext(typeof(GameShopContext))]
-    partial class GameShopContextModelSnapshot : ModelSnapshot
+    [Migration("20201214114649_cond")]
+    partial class cond
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,21 +68,6 @@ namespace WzorceGameShop.Migrations
                     b.ToTable("Bills");
                 });
 
-            modelBuilder.Entity("WzorceGameShop.Models.BillGame", b =>
-                {
-                    b.Property<int>("BillId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BillId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("BillsGames");
-                });
-
             modelBuilder.Entity("WzorceGameShop.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -115,21 +102,6 @@ namespace WzorceGameShop.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("WzorceGameShop.Models.ClientGame", b =>
-                {
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ClientId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("ClientsGames");
                 });
 
             modelBuilder.Entity("WzorceGameShop.Models.Game", b =>
@@ -219,36 +191,6 @@ namespace WzorceGameShop.Migrations
                     b.HasOne("WzorceGameShop.Models.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
-                });
-
-            modelBuilder.Entity("WzorceGameShop.Models.BillGame", b =>
-                {
-                    b.HasOne("WzorceGameShop.Models.Bill", "Bill")
-                        .WithMany("BillGames")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WzorceGameShop.Models.Game", "Game")
-                        .WithMany("BillGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WzorceGameShop.Models.ClientGame", b =>
-                {
-                    b.HasOne("WzorceGameShop.Models.Client", "Client")
-                        .WithMany("ClientGames")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WzorceGameShop.Models.Game", "Game")
-                        .WithMany("ClientGames")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("WzorceGameShop.Models.Game", b =>

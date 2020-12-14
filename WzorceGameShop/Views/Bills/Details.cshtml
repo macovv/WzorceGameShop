@@ -10,14 +10,15 @@
     <h4>Bill</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            Summary Price: 
+        <dt class="col-sm-2">
+            Summary Price:
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Model.SummaryPrice
         </dd>
     </dl>
+    <a asp-controller="Bills" asp-action="Buy" asp-route-id="@Model.Id"><button class="btn btn-primary">Buy</button></a>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Games" asp-action="Index">Back to List</a>
 </div>

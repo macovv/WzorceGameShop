@@ -18,5 +18,9 @@ namespace WzorceGameShop.Models
         public string Description { get; set; }
         public int PG { get; set; }
         public ICollection<BasketGame> BasketGames { get; set; }
+        public ICollection<ClientGame> ClientGames { get; set; }
+        public ICollection<BillGame> BillGames { get; set; }
+
+
     }
 }

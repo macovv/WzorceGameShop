@@ -23,6 +23,10 @@ namespace WzorceGameShop.Controllers
         // GET: Games
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
+            //var client = new Client() { Login = "Jano", Name = "Jan Kowalski", Saldo = 400 };
+            //_context.Clients.Add(client);
+            //_context.SaveChanges();
+
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nameDesc" : "";
             ViewData["CategorySortParam"] = sortOrder == "category" ? "categoryDesc" : "category";

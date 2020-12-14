@@ -21,12 +21,15 @@ namespace WzorceGameShop.Data
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<BasketGame> BasketsGames { get; set; }
+        public DbSet<ClientGame> ClientsGames { get; set; }
+        public DbSet<BillGame> BillsGames { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BasketGame>().HasKey(
                bc => new { bc.BasketId, bc.GameId }
             );
+
             modelBuilder.Entity<BasketGame>()
                 .HasOne(bc => bc.Basket)
                 .WithMany(b => b.BasketGames)
@@ -48,6 +51,38 @@ namespace WzorceGameShop.Data
                 .WithMany(c => c.Games)
                 .HasForeignKey(g => g.StudioId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            //
+
+            modelBuilder.Entity<ClientGame>().HasKey(
+               cg => new { cg.ClientId, cg.GameId }
+            );
+
+            modelBuilder.Entity<ClientGame>()
+                .HasOne(bc => bc.Client)
+                .WithMany(b => b.ClientGames)
+                .HasForeignKey(bc => bc.ClientId);
+
+            modelBuilder.Entity<ClientGame>()
+                .HasOne(bc => bc.Game)
+                .WithMany(b => b.ClientGames)
+                .HasForeignKey(bc => bc.GameId);
+
+
+            modelBuilder.Entity<BillGame>().HasKey(
+               cg => new { cg.BillId, cg.GameId }
+            );
+
+            modelBuilder.Entity<BillGame>()
+                .HasOne(bc => bc.Bill)
+                .WithMany(b => b.BillGames)
+                .HasForeignKey(bc => bc.BillId);
+
+            modelBuilder.Entity<BillGame>()
+                .HasOne(bc => bc.Game)
+                .WithMany(b => b.BillGames)
+                .HasForeignKey(bc => bc.GameId);
         }
+    
     }
 }

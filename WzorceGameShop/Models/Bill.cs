@@ -11,5 +11,7 @@ namespace WzorceGameShop.Models
         public IList<Game> Games { get; set; }
         public decimal SummaryPrice { get; set; }
         public Client Client { get; set; }
+        public ICollection<BillGame> BillGames { get; set; }
+
     }
 }
