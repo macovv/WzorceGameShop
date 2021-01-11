@@ -46,6 +46,7 @@ namespace WzorceGameShop.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var games = from x in _context.Games select x;
+            
 
             if (!String.IsNullOrEmpty(searchString))
             {

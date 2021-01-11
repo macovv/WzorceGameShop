@@ -1,0 +1,68 @@
+﻿@model IEnumerable<WzorceGameShop.Models.Game>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<form asp-action="Index" method="get">
+    <div class="form-action no-color">
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a>Name</a>
+            </th>
+            <th>
+                <a>CategoryId</a>
+            </th>
+            <th>
+                <a>StudioId</a>
+            </th>
+            <th>
+                <a">Price</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Promotion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudioId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Promotion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PG)
+                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+

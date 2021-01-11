@@ -66,6 +66,44 @@ namespace WzorceGameShop.Controllers
             return View(client);
         }
 
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
+        {
+            var client = _context.Clients.FirstOrDefault(x => x.Id == 1); // chyba na sztywno najlepiej poki co
+
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "nameDesc" : "";
+            ViewData["CategorySortParam"] = sortOrder == "category" ? "categoryDesc" : "category";
+            ViewData["StudioSortParam"] = sortOrder == "studio" ? "studioDesc" : "studio";
+            ViewData["PriceSortParam"] = sortOrder == "price" ? "priceDesc" : "price";
+            ViewData["PGSortParam"] = sortOrder == "pg" ? "pgDesc" : "pg";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var purchasedGames = from x in _context.ClientsGames select x;
+            var games = from x in _context.Games select x;
+            var clientsGame = new List<Game>();
+            foreach (var game in games)
+            {
+                foreach (var purchuasedGame in purchasedGames)
+                {
+                    if(purchuasedGame.GameId == game.Id)
+                    {
+                        clientsGame.Add(game);
+                    }
+                }
+            }
+            return View(clientsGame);
+        }
+
         private bool ClientExists(int id)
         {
             return _context.Clients.Any(e => e.Id == id);
